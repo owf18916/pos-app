@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Livewire\StockMovement;
+
+use Carbon\Carbon;
+use Livewire\Component;
+use App\Models\StockMovement;
+
+class StockMovementIndex extends Component
+{
+    public $startDate, $endDate;
+
+    protected $movements;
+
+    public function mount()
+    {
+        $this->startDate = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $this->endDate = Carbon::now()->addDay()->format('Y-m-d');
+        $this->loadStock();
+    }
+
+    public function updatedStartDate()
+    {
+        $this->loadStock();
+    }
+
+    public function updatedEndDate()
+    {
+        $this->loadStock();
+    }
+
+    public function loadStock()
+    {
+        $this->movements = StockMovement::with('product')
+                                        ->whereBetween('created_at', [
+                                            Carbon::parse($this->startDate)->startOfDay(),
+                                            Carbon::parse($this->endDate)->endOfDay()
+                                        ])
+                                        ->latest()
+                                        ->paginate(15);
+    }
+
+    public function render()
+    {
+        return view('livewire.stock-movement.stock-movement-index', ['movements' => $this->movements]);
+    }
+}

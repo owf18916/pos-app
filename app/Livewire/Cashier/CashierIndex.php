@@ -6,6 +6,7 @@ use App\Models\Sale;
 use App\Models\Product;
 use Livewire\Component;
 use App\Models\SaleItem;
+use App\Models\StockMovement;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -201,6 +202,13 @@ class CashierIndex extends Component
                     'quantity' => $item['quantity'],
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
+                ]);
+
+                StockMovement::create([
+                    'product_id' => $item['product']->id,
+                    'quantity' => $item['quantity'],
+                    'type' => 'out',
+                    'note' => 'penjualan atas invoice nomor : '.$sale->invoice_number,
                 ]);
 
                 $product->decrement('stock', $item['quantity']);
