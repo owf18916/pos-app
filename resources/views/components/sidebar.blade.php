@@ -1,6 +1,6 @@
 <aside class="w-64 bg-white shadow-lg flex flex-col">
     <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h1 class="text-2xl font-extrabold text-gray-800">POS Dashboard</h1>
+        <h1 class="text-2xl font-extrabold text-gray-800">Chana Frozen</h1>
     </div>
 
     <nav class="flex-1 px-4 py-6 space-y-2">
@@ -24,7 +24,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M20 13V7a2 2 0 00-2-2H6a2 2 0 00-2 2v6m16 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0H4"/>
             </svg>
-            Manajemen Produk & Stok
+            Manajemen Produk
         </a>
 
         <a href="{{ route('cashier.index') }}"
