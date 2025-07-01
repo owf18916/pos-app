@@ -5,6 +5,8 @@ namespace App\Livewire\StockMovement;
 use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\StockMovement;
+use App\Exports\StockMovementExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockMovementIndex extends Component
 {
@@ -40,8 +42,17 @@ class StockMovementIndex extends Component
                                         ->paginate(15);
     }
 
+    public function exportExcel()
+    {
+        return Excel::download(new StockMovementExport($this->startDate, $this->endDate), 'laporan-mutasi-stock.xlsx');
+    }
+
     public function render()
     {
+        if (!$this->movements) {
+            $this->loadStock();
+        }
+
         return view('livewire.stock-movement.stock-movement-index', ['movements' => $this->movements]);
     }
 }
