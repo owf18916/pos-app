@@ -13,6 +13,12 @@
                     <label class="text-sm text-gray-600">Sampai</label>
                     <input type="date" wire:model="endDate" class="border rounded px-3 py-2">
                 </div>
+                <div>
+                    <button wire:click="search"
+                        class="flex items-center gap-2 bg-gray-100 border text-gray-800 px-4 py-2 rounded hover:bg-gray-200 text-sm">
+                        <svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="size-6"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" /><path d="M21 21l-6 -6" /></svg>
+                    </button>
+                </div>
             </div>
 
             <div>

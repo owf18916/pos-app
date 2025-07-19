@@ -21,12 +21,7 @@ class StockMovementIndex extends Component
         $this->loadStock();
     }
 
-    public function updatedStartDate()
-    {
-        $this->loadStock();
-    }
-
-    public function updatedEndDate()
+    public function search()
     {
         $this->loadStock();
     }

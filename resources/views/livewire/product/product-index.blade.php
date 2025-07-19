@@ -53,7 +53,20 @@
 
     {{-- Tabel Daftar Produk --}}
     <div class="bg-white shadow-md rounded p-6">
-        <h2 class="text-xl font-semibold mb-4">Daftar Produk</h2>
+        <div class="flex justify-between">
+            <div>
+                <h2 class="text-xl font-semibold mb-4">Daftar Produk</h2>
+            </div>
+            <div>
+                <input
+                    type="text"
+                    wire:model="search"
+                    wire:keydown.enter="$dispatch('load-products')"
+                    placeholder="Cari produk..."
+                    class="w-full mb-4 px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" autofocus>
+            </div>
+        </div>
+
 
         <table class="w-full table-auto border-collapse">
             <thead class="bg-gray-100 text-left">

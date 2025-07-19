@@ -145,7 +145,7 @@ class CashierIndex extends Component
         };
 
         $sale = [
-            'invoice' => uniqid('INV' . now()->format('Ymd')),
+            'invoice' => Sale::generateInvoiceNumber(),
             'date' => now()->format('d-m-Y H:i'),
             'items' => collect($this->cart)->map(function ($item) {
                 return [
@@ -185,7 +185,7 @@ class CashierIndex extends Component
             DB::beginTransaction();
 
             $sale = Sale::create([
-                'invoice_number' => 'INV' . now()->format('ymd') . Str::upper(Str::random(6)),
+                'invoice_number' => Sale::generateInvoiceNumber(),
                 'user_id' => Auth::id(),
                 'total_amount' => $total,
                 'paid_amount' => $this->paid,

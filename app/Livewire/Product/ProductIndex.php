@@ -7,17 +7,25 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\StockMovement;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\On;
 
 class ProductIndex extends Component
 {
     use WithPagination;
 
+    protected $products;
     public $product_id;
     public $product_code;
     public $name;
     public $price;
     public $stock;
     public $isEditMode = false;
+    public $search;
+
+    public function boot()
+    {
+        $this->loadProducts();
+    }
 
     public function resetForm()
     {
@@ -140,10 +148,18 @@ class ProductIndex extends Component
         ]);
     }
 
+    #[On('load-products')]
+    public function loadProducts()
+    {
+        $this->products = Product::when(!empty($this->search), fn ($q) => $q->where('name', 'like', '%' . $this->search . '%'))
+                                ->latest()
+                                ->paginate(10);
+    }
+
     public function render()
     {
         return view('livewire.product.product-index', [
-            'products' => Product::latest()->paginate(10),
+            'products' => $this->products,
         ]);
     }
 }

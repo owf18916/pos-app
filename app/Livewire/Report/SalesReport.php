@@ -23,12 +23,7 @@ class SalesReport extends Component
         $this->loadSales();
     }
 
-    public function updatedStartDate()
-    {
-        $this->loadSales();
-    }
-
-    public function updatedEndDate()
+    public function search()
     {
         $this->loadSales();
     }
