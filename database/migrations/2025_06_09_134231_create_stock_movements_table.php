@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity'); // positif = masuk, negatif = keluar
-            $table->string('type'); // contoh: 'initial', 'adjustment', 'sale', 'purchase'
+            $table->string('type', 50); // contoh: 'initial', 'adjustment', 'sale', 'purchase'
             $table->text('note')->nullable();
             $table->timestamps();
         });

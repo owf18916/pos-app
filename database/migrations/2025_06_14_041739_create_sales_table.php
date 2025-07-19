@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->string('invoice_number')->unique();
+            $table->string('payment_method', 50);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->integer('total_amount');
             $table->integer('paid_amount');
