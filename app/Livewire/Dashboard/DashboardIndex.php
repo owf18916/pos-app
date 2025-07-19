@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\Sale;
 use Livewire\Component;
 use Carbon\Carbon;
+use Livewire\Attributes\Title;
 
 class DashboardIndex extends Component
 {
@@ -25,6 +26,7 @@ class DashboardIndex extends Component
         $this->todayRevenue = Sale::whereDate('created_at', Carbon::today())->sum('total_amount');
     }
 
+    #[Title('Dashboard')]
     public function render()
     {
         return view('livewire.dashboard.dashboard-index');

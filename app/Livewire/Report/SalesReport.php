@@ -6,6 +6,7 @@ use App\Models\Sale;
 use Livewire\Component;
 use Illuminate\Support\Carbon;
 use App\Exports\SalesReportExport;
+use Livewire\Attributes\Title;
 use Maatwebsite\Excel\Facades\Excel;
 
 class SalesReport extends Component
@@ -87,6 +88,7 @@ class SalesReport extends Component
         return Excel::download(new SalesReportExport($this->startDate, $this->endDate), 'laporan-penjualan.xlsx');
     }
 
+    #[Title('Sales')]
     public function render()
     {
         return view('livewire.report.sales-report');

@@ -57,13 +57,17 @@
             <div>
                 <h2 class="text-xl font-semibold mb-4">Daftar Produk</h2>
             </div>
-            <div>
-                <input
-                    type="text"
-                    wire:model="search"
-                    wire:keydown.enter="$dispatch('load-products')"
-                    placeholder="Cari produk..."
-                    class="w-full mb-4 px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" autofocus>
+            <div class="flex space-x-4">
+                <x-export-excel />
+                
+                <div>
+                    <input
+                        type="text"
+                        wire:model="search"
+                        wire:keydown.enter="$dispatch('load-products')"
+                        placeholder="Cari produk..."
+                        class="w-full mb-4 px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-400 focus:outline-none" autofocus>
+                </div>
             </div>
         </div>
 

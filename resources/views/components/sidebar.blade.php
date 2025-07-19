@@ -1,11 +1,19 @@
 <aside class="w-64 bg-white shadow-lg flex flex-col">
-    <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <h1 class="text-2xl font-extrabold text-gray-800">Chana Frozen</h1>
+    <!-- Logo & Header -->
+    <div class="px-6 py-4 border-b border-gray-200 flex items-start justify-between">
+        <!-- Logo & Text -->
+        <div class="flex flex-col items-start">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo Chana" class="h-24 w-24 object-contain mb-1">
+        </div>
+
+        <!-- Logout Button -->
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="text-red-600 hover:underline">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
+            <button type="submit" class="text-red-600 hover:text-red-800 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15M12 9l3 3m0 0-3 3m3-3H2.25" />
                 </svg>
             </button>
         </form>
@@ -13,7 +21,7 @@
 
     <nav class="flex-1 px-4 py-6 space-y-2">
 
-        <a href="{{ route('dashboard') }}"
+        <a wire:navigate href="{{ route('dashboard') }}"
         class="flex items-center px-4 py-3 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition
             {{ request()->routeIs('dashboard') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -24,7 +32,7 @@
             Dashboard
         </a>
 
-        <a href="{{ route('products.index') }}"
+        <a wire:navigate href="{{ route('products.index') }}"
         class="flex items-center px-4 py-3 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition
             {{ request()->routeIs('products.index') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"
@@ -35,7 +43,7 @@
             Manajemen Produk
         </a>
 
-        <a href="{{ route('cashier.index') }}"
+        <a wire:navigate href="{{ route('cashier.index') }}"
         class="flex items-center px-4 py-3 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition
         {{ request()->routeIs('cashier.index') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 mr-3">
@@ -44,7 +52,7 @@
             Penjualan & Kasir
         </a>
 
-        <a href="{{ route('report.index') }}"
+        <a wire:navigate href="{{ route('report.index') }}"
         class="flex items-center px-4 py-3 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition
         {{ request()->routeIs('report.index') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 mr-3">
@@ -53,7 +61,7 @@
             Laporan Penjualan
         </a>
         
-        <a href="{{ route('stock.index') }}"
+        <a wire:navigate href="{{ route('stock.index') }}"
         class="flex items-center px-4 py-3 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition
         {{ request()->routeIs('stock.index') ? 'bg-blue-100 text-blue-700 font-semibold' : '' }}">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-6 w-6 mr-3">

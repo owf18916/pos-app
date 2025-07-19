@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Livewire\Component;
 use App\Models\StockMovement;
 use App\Exports\StockMovementExport;
+use Livewire\Attributes\Title;
 use Maatwebsite\Excel\Facades\Excel;
 
 class StockMovementIndex extends Component
@@ -42,6 +43,7 @@ class StockMovementIndex extends Component
         return Excel::download(new StockMovementExport($this->startDate, $this->endDate), 'laporan-mutasi-stock.xlsx');
     }
 
+    #[Title('Stock')]
     public function render()
     {
         if (!$this->movements) {

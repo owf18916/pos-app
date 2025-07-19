@@ -2,12 +2,15 @@
 
 namespace App\Livewire\Product;
 
+use App\Exports\ProductExport;
 use App\Models\Product;
 use Livewire\Component;
+use Livewire\Attributes\On;
 use Livewire\WithPagination;
 use App\Models\StockMovement;
+use Livewire\Attributes\Title;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\On;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductIndex extends Component
 {
@@ -156,6 +159,12 @@ class ProductIndex extends Component
                                 ->paginate(10);
     }
 
+    public function exportExcel()
+    {
+        return Excel::download(new ProductExport(), 'daftar-produk.xlsx');
+    }
+
+    #[Title('Products')]
     public function render()
     {
         return view('livewire.product.product-index', [

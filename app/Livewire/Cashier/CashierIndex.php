@@ -11,6 +11,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Title;
 
 class CashierIndex extends Component
 {
@@ -249,6 +250,7 @@ class CashierIndex extends Component
         }
     }
     
+    #[Title('Cashier')]
     public function render()
     {
         return view('livewire.cashier.cashier-index');
