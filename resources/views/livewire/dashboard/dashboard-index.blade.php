@@ -3,7 +3,7 @@
     <main class="flex-1 p-6">
         <h1 class="text-4xl font-extrabold mb-8 text-gray-800">Dashboard</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
 
             <!-- Card Total Produk -->
             <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow duration-300">
@@ -70,6 +70,28 @@
                 <div>
                     <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Pendapatan Hari Ini</h2>
                     <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($todayRevenue, 0, ',', '.') }}</p>
+                </div>
+            </div>
+
+            <!-- Card Laba Hari Ini -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow duration-300">
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        viewBox="0 0 24 24">
+                        <path d="M12 8c-1.657 0-3 1.567-3 3.5S10.343 15 12 15s3-1.567 3-3.5S13.657 8 12 8z"/>
+                        <path d="M12 3v2"/>
+                        <path d="M12 19v2"/>
+                        <path d="M4.22 4.22l1.42 1.42"/>
+                        <path d="M18.36 18.36l1.42 1.42"/>
+                        <path d="M1 12h2"/>
+                        <path d="M21 12h2"/>
+                        <path d="M4.22 19.78l1.42-1.42"/>
+                        <path d="M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Laba Hari Ini</h2>
+                    <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($todayProfit, 0, ',', '.') }}</p>
                 </div>
             </div>
 

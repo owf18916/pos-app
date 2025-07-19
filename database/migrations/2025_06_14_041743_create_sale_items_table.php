@@ -16,8 +16,10 @@ return new class extends Migration
             $table->foreignId('sale_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->integer('quantity');
-            $table->integer('price'); // Harga saat transaksi
-            $table->integer('subtotal');
+            $table->integer('base_price'); // Harga saat transaksi
+            $table->decimal('price', 15, 2); // Harga saat transaksi
+            $table->decimal('subtotal', 15, 2);
+            $table->decimal('profit', 15, 2);
             $table->timestamps();
         });
     }

@@ -31,7 +31,7 @@ class SalesReport extends Component
 
     public function loadSales()
     {
-        $this->sales = Sale::with('user')
+        $this->sales = Sale::with(['user'])
             ->whereBetween('created_at', [
                 Carbon::parse($this->startDate)->startOfDay(),
                 Carbon::parse($this->endDate)->endOfDay()
@@ -48,8 +48,10 @@ class SalesReport extends Component
             return [
                 'name' => $item->product->name ?? '-',
                 'quantity' => $item->quantity,
+                'base_price' => $item->base_price,
                 'price' => $item->price,
                 'subtotal' => $item->subtotal,
+                'profit' => $item->price - $item->product_price,
             ];
         })->toArray();
     }

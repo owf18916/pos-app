@@ -2,12 +2,12 @@
 
 namespace App\Livewire\Product;
 
-use App\Exports\ProductExport;
 use App\Models\Product;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Livewire\WithPagination;
 use App\Models\StockMovement;
+use App\Exports\ProductExport;
 use Livewire\Attributes\Title;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
@@ -20,6 +20,7 @@ class ProductIndex extends Component
     public $product_id;
     public $product_code;
     public $name;
+    public $base_price;
     public $price;
     public $stock;
     public $isEditMode = false;
@@ -35,6 +36,7 @@ class ProductIndex extends Component
         $this->product_id = null;
         $this->product_code = '';
         $this->name = '';
+        $this->base_price = '';
         $this->price = '';
         $this->stock = '';
         $this->isEditMode = false;
@@ -47,6 +49,7 @@ class ProductIndex extends Component
         $this->product_id = $product->id;
         $this->product_code = $product->product_code;
         $this->name = $product->name;
+        $this->base_price = $product->base_price;
         $this->price = $product->price;
         $this->stock = $product->stock;
         $this->isEditMode = true;
@@ -71,6 +74,7 @@ class ProductIndex extends Component
                 ? Rule::unique('products', 'product_code')->ignore($this->product_id)
                 : 'unique:products,product_code'],
             'name' => 'required|string',
+            'base_price' => 'required|numeric|min:0',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
         ];
@@ -105,7 +109,7 @@ class ProductIndex extends Component
                 StockMovement::create([
                     'product_id' => $product->id,
                     'quantity' => $validated['stock'],
-                    'type' => 'initial',
+                    'type' => 'stock awal',
                     'note' => 'Stok awal produk',
                 ]);
             }
@@ -117,8 +121,8 @@ class ProductIndex extends Component
             ]);
         }
 
-        // $this->resetForm();
-        $this->resetPage();
+        $this->resetForm();
+        $this->loadProducts();
     }
 
     public function addStock($id, $quantity)
@@ -140,7 +144,7 @@ class ProductIndex extends Component
         StockMovement::create([
             'product_id' => $product->id,
             'quantity' => $quantity,
-            'type' => 'in',
+            'type' => 'penambahan',
             'note' => 'Penambahan stok manual',
         ]);
 

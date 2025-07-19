@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('product_code')->unique();
             $table->string('name');
+            $table->decimal('base_price', 15, 2);
             $table->decimal('price', 15, 2);
             $table->integer('stock')->default(0);
             $table->timestamps();

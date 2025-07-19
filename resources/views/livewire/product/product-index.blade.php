@@ -21,7 +21,14 @@
             </div>
 
             <div>
-                <label class="block text-sm font-medium text-gray-700">Harga</label>
+                <label class="block text-sm font-medium text-gray-700">Harga Kulak (HPP)</label>
+                <input type="number" wire:model.defer="base_price"
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2" />
+                @error('base_price') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Harga Jual</label>
                 <input type="number" wire:model.defer="price"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm px-3 py-2" />
                 @error('price') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
@@ -78,7 +85,9 @@
                     <th class="p-2 border">#</th>
                     <th class="p-2 border">Kode</th>
                     <th class="p-2 border">Nama</th>
-                    <th class="p-2 border w-30">Harga</th>
+                    <th class="p-2 border w-30">HPP</th>
+                    <th class="p-2 border w-30">Harga Jual</th>
+                    <th class="p-2 border w-30">Margin</th>
                     <th class="p-2 border">Stok</th>
                     <th class="p-2 border w-30"></th>
                 </tr>
@@ -89,7 +98,9 @@
                         <td class="p-2 border">{{ $products->firstItem() + $index }}</td>
                         <td class="p-2 border">{{ $product->product_code }}</td>
                         <td class="p-2 border">{{ $product->name }}</td>
+                        <td class="p-2 border">Rp {{ number_format($product->base_price, 0, ',', '.') }}</td>
                         <td class="p-2 border">Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                        <td class="p-2 border">Rp {{ number_format($product->price - $product->base_price, 0, ',', '.') }}</td>
                         <td class="p-2 border">{{ $product->stock }}</td>
                         <td class="p-2 border text-center space-x-1">
                             <button wire:click="$dispatch('open-add-stock', { id: {{ $product->id }}, name: '{{ $product->name }}' })"

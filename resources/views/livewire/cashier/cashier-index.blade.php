@@ -98,6 +98,18 @@
                 <span class="font-bold">Rp {{ number_format($this->getTotal(), 0, ',', '.') }}</span>
             </div>
 
+            {{-- Metode Pembayaran --}}
+            <div>
+                <label for="paymentMethod" class="block text-sm font-medium text-gray-700 mb-1">Metode Pembayaran</label>
+                <select wire:model="paymentMethod"
+                        class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300">
+                    <option value="" selected>-- Pilih Metode --</option>
+                    <option value="cash">Cash</option>
+                    <option value="transfer">Transfer</option>
+                    <option value="qris">QRIS</option>
+                </select>
+            </div>
+
             <div class="mt-4">
                 <label for="paid" class="block text-sm font-medium text-gray-700 mb-1">Jumlah Dibayar</label>
                 <input
@@ -162,4 +174,111 @@
             </div>
             @endif
     </div>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            Livewire.on('print-struk', function (sale) {
+                if (!qz.websocket.isActive()) {
+                    qz.websocket.connect().then(() => sendToPrinter(sale));
+                } else {
+                    sendToPrinter(sale);
+                }
+            });
+
+            function sendToPrinter(sale) {
+                const config = qz.configs.create("POS-PRINTER");
+
+                qz.appendImage("/images/logo.png", 'png')
+                    .then(() => {
+                        const items = sale.items.map(item =>
+                            `${item.name} x${item.quantity} @${item.price} = ${item.subtotal}\n`
+                        ).join('');
+
+                        const content = [
+                            '\x1B\x40', // init printer
+                            '\n',
+                            `Invoice: ${sale.invoice}\n`,
+                            `Tanggal: ${sale.date}\n\n`,
+                            items,
+                            '-----------------------------\n',
+                            `Total   : ${sale.total}\n`,
+                            `Bayar   : ${sale.paid}\n`,
+                            `Kembali : ${sale.change}\n`,
+                            '\n',
+                            'TERIMA KASIH\nSUDAH BERBELANJA\n',
+                            '\n\n\n',
+                            '\x1D\x56\x00' // cut paper
+                        ];
+
+                        return qz.print(config, content);
+                    })
+                    .catch(e => alert("Gagal cetak: " + e));
+            }
+
+            Livewire.on('print-preview', function (...sale) {
+                const data = sale[0][0]
+
+                const items = data.items
+                if (!items || items.length === 0) {
+                    alert("Keranjang kosong, tidak ada yang bisa dipreview.");
+                    
+                    return;
+                }
+
+                const itemRows = items.map(item => `
+                    <tr>
+                        <td>${item.name}</td>
+                        <td style="text-align:right;">x${item.quantity}</td>
+                        <td style="text-align:right;">@${item.price}</td>
+                        <td style="text-align:right;">${item.subtotal}</td>
+                    </tr>
+                `).join('');
+
+                const html = `
+                    <html>
+                    <head>
+                        <title>Struk Penjualan</title>
+                        <style>
+                            body { font-family: monospace; padding: 10px; }
+                            table { width: 100%; border-collapse: collapse; }
+                            td { padding: 2px; }
+                            .right { text-align: right; }
+                            .center { text-align: center; }
+                            .bold { font-weight: bold; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="center">
+                            <img src="/images/struck-logo.png" alt="Logo" style="width: 120px; height: auto; margin-bottom: 10px;" />
+                        </div>
+                        <div class="center">Jalan Raya Kebonsari 540 Tumpang</div>
+                        <div class="center">081233330252</div>
+                        <hr>
+                        <div>Invoice: ${data.invoice}</div>
+                        <div>Tanggal: ${data.date}</div>
+                        <div>Kasir: ${data.cashier}</div>
+                        <div class="font-semibold">Pembayaran: ${data.payment_method}</div>
+                        <hr>
+                        <table>${itemRows}</table>
+                        <hr>
+                        <table>
+                            <tr><td colspan="3" class="right">Total</td><td class="right">${data.total}</td></tr>
+                            <tr><td colspan="3" class="right">Bayar</td><td class="right">${data.paid}</td></tr>
+                            <tr><td colspan="3" class="right">Kembali</td><td class="right">${data.change}</td></tr>
+                        </table>
+                        <hr>
+                        <div class="center">Terima kasih sudah berbelanja di Chana Frozen!</div>
+                        <script>window.print();<\/script>
+                    </body>
+                    </html>
+                `;
+
+                const win = window.open('', 'Struk', 'width=400,height=600');
+                win.document.write(html);
+                win.document.close();
+            });
+        });
+    </script>
+    @endpush
 </div>

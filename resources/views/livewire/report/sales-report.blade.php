@@ -31,7 +31,8 @@
                 <tr>
                     <th class="border px-3 py-2 text-left">Invoice</th>
                     <th class="border px-3 py-2 text-left">Kasir</th>
-                    <th class="border px-3 py-2 text-right">Total</th>
+                    <th class="border px-3 py-2 text-right">Total Penerimaan</th>
+                    <th class="border px-3 py-2 text-right">Laba</th>
                     <th class="border px-3 py-2 text-left">Tanggal</th>
                     <th class="border px-3 py-2 text-center">Aksi</th>
                 </tr>
@@ -42,6 +43,7 @@
                         <td class="border px-3 py-2">{{ $sale->invoice_number }}</td>
                         <td class="border px-3 py-2">{{ $sale->user->name }}</td>
                         <td class="border px-3 py-2 text-right">Rp {{ number_format($sale->total_amount) }}</td>
+                        <td class="border px-3 py-2 text-right">Rp {{ number_format($sale->items->sum('profit')) }}</td>
                         <td class="border px-3 py-2">{{ $sale->created_at->format('d-m-Y H:i') }}</td>
                         <td class="border px-3 py-2 text-center">
                             <button wire:click="showDetails({{ $sale->id }})"
@@ -71,8 +73,10 @@
                     <tr>
                         <th class="border px-2 py-1 text-left">Produk</th>
                         <th class="border px-2 py-1 text-right">Qty</th>
-                        <th class="border px-2 py-1 text-right">Harga</th>
+                        <th class="border px-2 py-1 text-right">HPP</th>
+                        <th class="border px-2 py-1 text-right">Harga Jual</th>
                         <th class="border px-2 py-1 text-right">Subtotal</th>
+                        <th class="border px-2 py-1 text-right">Laba</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -80,11 +84,21 @@
                         <tr>
                             <td class="border px-2 py-1">{{ $item->product->name }}</td>
                             <td class="border px-2 py-1 text-right">{{ $item->quantity }}</td>
+                            <td class="border px-2 py-1 text-right">Rp {{ number_format($item->base_price) }}</td>
                             <td class="border px-2 py-1 text-right">Rp {{ number_format($item->price) }}</td>
                             <td class="border px-2 py-1 text-right">Rp {{ number_format($item->subtotal) }}</td>
+                            <td class="border px-2 py-1 text-right">Rp {{ number_format($item->profit) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr class="font-bold bg-gray-100">
+                        <td colspan="4" class="text-right px-3 py-2">Total Laba</td>
+                        <td colspan="2" class="text-right px-3 py-2">
+                            Rp {{ number_format($sales->sum(fn($sale) => $sale->items->sum('profit'))) }}
+                        </td>
+                    </tr>
+                </tfoot>
             </table>
 
             <div class="flex justify-end mt-4 space-x-2">

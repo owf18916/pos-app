@@ -19,11 +19,18 @@ class CashierIndex extends Component
     public $cart = []; // [product_id => [product, quantity, price, subtotal]]
     public $paid = 0;
     public $filteredProducts = [];
+    public $paymentMethod;
 
     protected $paymentFailedNotification = [
         'title' => 'Gagal!',
         'text' => 'Pembayaran kurang.',
         'icon' => 'error',
+    ];
+
+    protected $paymentRequiredNotification = [
+        'title' => 'Pilih Metode Pembayaran',
+        'text' => 'Silakan pilih metode pembayaran sebelum lanjut.',
+        'icon' => 'warning',
     ];
 
     public function process()
@@ -145,6 +152,10 @@ class CashierIndex extends Component
             return $this->dispatch('swal', $this->paymentFailedNotification);
         };
 
+        if (!$this->isPaymentMethodValid()) {
+            return $this->dispatch('swal', $this->paymentRequiredNotification);
+        }
+
         $sale = [
             'invoice' => Sale::generateInvoiceNumber(),
             'date' => now()->format('d-m-Y H:i'),
@@ -160,6 +171,7 @@ class CashierIndex extends Component
             'paid' => number_format($this->paid, 0, ',', '.'),
             'change' => number_format($this->getChange(), 0, ',', '.'),
             'cashier' => Auth::user()->name,
+            'payment_method' => ucfirst($this->paymentMethod),
         ];
 
         $this->dispatch('print-preview', $sale);
@@ -174,6 +186,11 @@ class CashierIndex extends Component
         }
     }
 
+    protected function isPaymentMethodValid()
+    {
+        return in_array($this->paymentMethod, ['cash', 'transfer', 'qris']);
+    }
+
     public function saveTransaction()
     {
         $total = $this->getTotal();
@@ -182,11 +199,16 @@ class CashierIndex extends Component
             return $this->dispatch('swal', $this->paymentFailedNotification);
         };
 
+        if (!$this->isPaymentMethodValid()) {
+            return $this->dispatch('swal', $this->paymentRequiredNotification);
+        }
+
         try {
             DB::beginTransaction();
 
             $sale = Sale::create([
                 'invoice_number' => Sale::generateInvoiceNumber(),
+                'payment_method' => $this->paymentMethod,
                 'user_id' => Auth::id(),
                 'total_amount' => $total,
                 'paid_amount' => $this->paid,
@@ -196,19 +218,23 @@ class CashierIndex extends Component
             foreach ($this->cart as $item) {
                 // Kurangi stok
                 $product = Product::findOrFail($item['product']['id']);
+                $basePrice = $product->base_price;
+                $basePriceAmount = $item['quantity'] * $basePrice;
 
                 SaleItem::create([
                     'sale_id' => $sale->id,
                     'product_id' => $item['product']->id,
                     'quantity' => $item['quantity'],
+                    'base_price' => $basePrice,
                     'price' => $item['price'],
                     'subtotal' => $item['subtotal'],
+                    'profit' => $item['subtotal'] - $basePriceAmount,
                 ]);
 
                 StockMovement::create([
                     'product_id' => $item['product']->id,
                     'quantity' => $item['quantity'],
-                    'type' => 'out',
+                    'type' => 'penjualan',
                     'note' => 'penjualan atas invoice nomor : '.$sale->invoice_number,
                 ]);
 
@@ -231,7 +257,7 @@ class CashierIndex extends Component
 
             DB::commit();
 
-            $this->reset(['cart', 'paid']);
+            $this->reset(['cart', 'paid', 'paymentMethod']);
 
             $this->dispatch('swal', [
                 'title' => 'Berhasil!',

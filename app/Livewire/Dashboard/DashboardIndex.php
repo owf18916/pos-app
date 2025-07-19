@@ -14,6 +14,7 @@ class DashboardIndex extends Component
     public $totalSales;
     public $activeCashiers;
     public $todayRevenue;
+    public $todayProfit;
 
     public function mount()
     {
@@ -24,6 +25,12 @@ class DashboardIndex extends Component
         $this->activeCashiers = Sale::distinct('user_id')->count('user_id');
 
         $this->todayRevenue = Sale::whereDate('created_at', Carbon::today())->sum('total_amount');
+
+        $this->todayProfit = Sale::whereDate('created_at', Carbon::today())
+            ->with('items')
+            ->get()
+            ->flatMap->items // gabungkan semua item dari seluruh sale
+            ->sum('profit'); // jumlahkan kolom profit
     }
 
     #[Title('Dashboard')]

@@ -16,7 +16,9 @@ class ProductExport implements FromCollection, WithHeadings
         return [
             'Kode Produk',
             'Nama Produk',
-            'Harga',
+            'Harga Kulak (HPP)',
+            'Harga Jual',
+            'Margin Laba',
             'Stock',
             'Tanghgal Entri',
             'Tanggal Update'
@@ -33,7 +35,9 @@ class ProductExport implements FromCollection, WithHeadings
             $rows[] = [
                 'Kode Produk' => $product->product_code,
                 'Nama Produk' => $product->name,
-                'Harga' => $product->price,
+                'Harga Kulak (HPP)' => $product->base_price,
+                'Harga Jual' => $product->price,
+                'Margin Laba' => $product->price - $product->base_price,
                 'Stock' => $product->stock,
                 'Tanghgal Entri' => $product->created_at,
                 'Tanggal Update' => $product->updated_at

@@ -26,24 +26,25 @@ class SalesSummarySheet implements FromCollection, WithHeadings, WithTitle, With
 
     public function collection()
     {
-        return Sale::with('user')
+        return Sale::with(['user', 'items'])
             ->when(!empty($this->startDate) && !empty($this->endDate), function ($q) {
                 $q->whereBetween('created_at', [$this->startDate, $this->endDate]);
             })
             ->get()
             ->map(fn($sale) => [
-                'Invoice' => $sale->invoice_number,
-                'Tanggal' => $sale->created_at->format('d-m-Y H:i'),
-                'Kasir'   => $sale->user->name ?? '-',
-                'Total'   => $sale->total_amount,
-                'Bayar'   => $sale->paid_amount,
-                'Kembali' => $sale->change_amount ?? 0,
+                'Invoice'           => $sale->invoice_number,
+                'Tanggal'           => $sale->created_at->format('d-m-Y H:i'),
+                'Kasir'             => $sale->user->name ?? '-',
+                'Total Penjualan'   => $sale->total_amount,
+                'Bayar'             => $sale->paid_amount,
+                'Kembali'           => $sale->change_amount ?? 0,
+                'Laba'              => $sale->items->sum('profit') ?? 0,
             ]);
     }
 
     public function headings(): array
     {
-        return ['Invoice', 'Tanggal', 'Kasir', 'Total', 'Bayar', 'Kembali'];
+        return ['Invoice', 'Tanggal', 'Kasir', 'Total Penjualan', 'Bayar', 'Kembali', 'Laba'];
     }
 }
 

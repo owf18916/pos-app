@@ -36,12 +36,14 @@ class SalesDetailSheet implements FromCollection, WithHeadings, WithTitle
         foreach ($sales as $sale) {
             foreach ($sale->items as $item) {
                 $rows[] = [
-                    'Invoice'   => $sale->invoice_number,
-                    'Tanggal'   => $sale->created_at->format('d-m-Y H:i'),
-                    'Produk'    => $item->product->name ?? '-',
-                    'Qty'       => $item->quantity,
-                    'Harga'     => $item->price,
-                    'Subtotal'  => $item->subtotal,
+                    'Invoice'               => $sale->invoice_number,
+                    'Tanggal'               => $sale->created_at->format('d-m-Y H:i'),
+                    'Produk'                => $item->product->name ?? '-',
+                    'Qty'                   => $item->quantity,
+                    'Harga Kulak (HPP)'     => $item->product->base_price,
+                    'Harga'                 => $item->price,
+                    'Subtotal'              => $item->subtotal,
+                    'Laba'                  => $item->price - $item->product->base_price,
                 ];
             }
         }
@@ -51,7 +53,7 @@ class SalesDetailSheet implements FromCollection, WithHeadings, WithTitle
 
     public function headings(): array
     {
-        return ['Invoice', 'Tanggal', 'Produk', 'Qty', 'Harga', 'Subtotal'];
+        return ['Invoice', 'Tanggal', 'Produk', 'Qty', 'Harga Kulak (HPP)', 'Harga', 'Subtotal', 'Laba'];
     }
 }
 
