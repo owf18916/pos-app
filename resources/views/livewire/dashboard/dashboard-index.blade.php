@@ -95,6 +95,51 @@
                 </div>
             </div>
 
+            <!-- Card Saldo Kas -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow duration-300">
+                <div class="bg-teal-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-teal-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        viewBox="0 0 24 24">
+                        <path d="M12 8v4l3 3"/>
+                        <circle cx="12" cy="12" r="10"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Saldo Cash</h2>
+                    <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($cashBalance, 0, ',', '.') }}</p>
+                </div>
+            </div>
+
+            <!-- Card Saldo Bank -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow duration-300">
+                <div class="bg-indigo-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        viewBox="0 0 24 24">
+                        <path d="M3 10l9-7 9 7"/>
+                        <path d="M4 10v10h16V10"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Saldo Bank</h2>
+                    <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($bankBalance, 0, ',', '.') }}</p>
+                </div>
+            </div>
+
+            <!-- Card Total Saldo -->
+            <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow duration-300">
+                <div class="bg-gray-100 p-3 rounded-full">
+                    <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                        viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wide">Total Saldo</h2>
+                    <p class="text-3xl font-bold text-gray-900">Rp {{ number_format($totalBalance, 0, ',', '.') }}</p>
+                </div>
+            </div>
+
             <div class="w-full">
                 <livewire:dashboard.sales-chart />
             </div>

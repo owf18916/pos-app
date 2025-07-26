@@ -2,10 +2,11 @@
 
 namespace App\Livewire\Dashboard;
 
-use App\Models\Product;
-use App\Models\Sale;
-use Livewire\Component;
 use Carbon\Carbon;
+use App\Models\Sale;
+use App\Models\Product;
+use Livewire\Component;
+use App\Models\CashFlow;
 use Livewire\Attributes\Title;
 
 class DashboardIndex extends Component
@@ -15,6 +16,9 @@ class DashboardIndex extends Component
     public $activeCashiers;
     public $todayRevenue;
     public $todayProfit;
+    public $cashBalance;
+    public $bankBalance;
+    public $totalBalance;
 
     public function mount()
     {
@@ -31,6 +35,10 @@ class DashboardIndex extends Component
             ->get()
             ->flatMap->items // gabungkan semua item dari seluruh sale
             ->sum('profit'); // jumlahkan kolom profit
+
+        $this->cashBalance = CashFlow::where('source', 'cash')->sum('amount');
+        $this->bankBalance = CashFlow::where('source', 'bank')->sum('amount');
+        $this->totalBalance = $this->cashBalance + $this->bankBalance;
     }
 
     #[Title('Dashboard')]

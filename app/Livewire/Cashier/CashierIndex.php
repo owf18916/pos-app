@@ -5,13 +5,14 @@ namespace App\Livewire\Cashier;
 use App\Models\Sale;
 use App\Models\Product;
 use Livewire\Component;
+use App\Models\CashFlow;
 use App\Models\SaleItem;
-use App\Models\StockMovement;
 use Illuminate\Support\Str;
+use App\Models\StockMovement;
+use Livewire\Attributes\Title;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Attributes\Title;
 
 class CashierIndex extends Component
 {
@@ -206,8 +207,9 @@ class CashierIndex extends Component
         try {
             DB::beginTransaction();
 
+            $invoiceNumber = Sale::generateInvoiceNumber();
             $sale = Sale::create([
-                'invoice_number' => Sale::generateInvoiceNumber(),
+                'invoice_number' => $invoiceNumber,
                 'payment_method' => $this->paymentMethod,
                 'user_id' => Auth::id(),
                 'total_amount' => $total,
@@ -240,6 +242,20 @@ class CashierIndex extends Component
 
                 $product->decrement('stock', $item['quantity']);
             }
+
+            $source = match ($this->paymentMethod) {
+                'cash' => 'cash',
+                'transfer', 'qris' => 'bank',
+            };
+
+            CashFlow::create([
+                'type' => 'in',
+                'source' => $source,
+                'amount' => $total,
+                'description' => 'Penjualan #' . $sale->invoice_number,
+                'date' => now(),
+                'sale_id' => $sale->id,
+            ]);
 
             $this->dispatch('print-struk', [
                 'invoice' => $sale->invoice_number,

@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Cash\CashIndex;
 use App\Livewire\Report\SalesReport;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/cashier', CashierIndex::class)->name('cashier.index');
     Route::get('/report', SalesReport::class)->name('report.index');
     Route::get('/stock', StockMovementIndex::class)->name('stock.index');
+    Route::get('/cash', CashIndex::class)->name('cash.index');
 
     Route::post('/logout', function () {
         Auth::logout();
