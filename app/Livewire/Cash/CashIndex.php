@@ -239,7 +239,7 @@ class CashIndex extends Component
             $query->where('description', 'like', '%' . $this->filter['description'] . '%');
         }
 
-        $transactions = $query->orderByDesc('date')->paginate(10);
+        $transactions = $query->orderByDesc('updated_at')->paginate(10);
 
         $this->computeSummaries();
 

@@ -19,6 +19,7 @@ class CashierIndex extends Component
     public $search = '';
     public $cart = []; // [product_id => [product, quantity, price, subtotal]]
     public $paid = 0;
+    public $discount = 0;
     public $filteredProducts = [];
     public $paymentMethod;
 
@@ -120,9 +121,20 @@ class CashierIndex extends Component
         unset($this->cart[$productId]);
     }
 
-    public function getTotal()
+    public function getSubtotalBeforeDiscountProperty()
     {
         return collect($this->cart)->sum('subtotal');
+    }
+
+    public function getFormattedSubtotalBeforeDiscountProperty()
+    {
+        return 'Rp ' . number_format($this->subtotalBeforeDiscount, 0, ',', '.');
+    }
+
+    public function getTotal()
+    {
+        $subtotal = collect($this->cart)->sum('subtotal');
+        return max(0, $subtotal - $this->discount); // Tidak boleh negatif
     }
 
     public function getChange()
@@ -168,6 +180,8 @@ class CashierIndex extends Component
                     'subtotal' => number_format($item['subtotal'], 0, ',', '.'),
                 ];
             })->values()->all(),
+            'subtotal' => number_format($this->subtotalBeforeDiscount, 0, ',', '.'),
+            'discount' => number_format($this->discount, 0, ',', '.'),
             'total' => number_format($this->getTotal(), 0, ',', '.'),
             'paid' => number_format($this->paid, 0, ',', '.'),
             'change' => number_format($this->getChange(), 0, ',', '.'),
@@ -212,6 +226,8 @@ class CashierIndex extends Component
                 'invoice_number' => $invoiceNumber,
                 'payment_method' => $this->paymentMethod,
                 'user_id' => Auth::id(),
+                'subtotal' => $this->getSubtotalBeforeDiscountProperty(),
+                'discount' => $this->discount,
                 'total_amount' => $total,
                 'paid_amount' => $this->paid,
                 'change_amount' => $this->getChange(),
@@ -257,9 +273,21 @@ class CashierIndex extends Component
                 'sale_id' => $sale->id,
             ]);
 
+            if ($this->discount > 0) {
+                CashFlow::create([
+                    'type' => 'out',
+                    'source' => $source,
+                    'amount' => $this->discount,
+                    'description' => 'Diskon Penjualan #' . $sale->invoice_number,
+                    'date' => now(),
+                    'sale_id' => $sale->id,
+                ]);
+            }
+
             $this->dispatch('print-struk', [
                 'invoice' => $sale->invoice_number,
                 'date' => now()->format('d-m-Y H:i'),
+                'discount' => number_format($sale->discount_amount ?? 0, 0, ',', '.'),
                 'total' => number_format($sale->total_amount, 0, ',', '.'),
                 'paid' => number_format($sale->paid_amount, 0, ',', '.'),
                 'change' => number_format($sale->change_amount, 0, ',', '.'),
