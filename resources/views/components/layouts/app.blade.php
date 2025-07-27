@@ -6,6 +6,8 @@
 
         @vite(['resources/css/app.css','resources/js/app.js'])
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/rsvp/4.8.5/rsvp.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/qz-tray/sha256.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/qz-tray@2.1.0/qz-tray.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 

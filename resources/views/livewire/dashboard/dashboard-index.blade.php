@@ -3,7 +3,7 @@
     <main class="flex-1 p-6">
         <h1 class="text-4xl font-extrabold mb-8 text-gray-800">Dashboard</h1>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
             <!-- Card Total Produk -->
             <div class="bg-white rounded-lg shadow-lg p-6 flex items-center space-x-4 hover:shadow-xl transition-shadow duration-300">
