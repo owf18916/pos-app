@@ -257,9 +257,27 @@ class CashierIndex extends Component
                 'sale_id' => $sale->id,
             ]);
 
-            $this->dispatch('print-struk', [
+            // $this->dispatch('print-struk', [
+            //     'invoice' => $sale->invoice_number,
+            //     'date' => now()->format('d-m-Y H:i'),
+            //     'total' => number_format($sale->total_amount, 0, ',', '.'),
+            //     'paid' => number_format($sale->paid_amount, 0, ',', '.'),
+            //     'change' => number_format($sale->change_amount, 0, ',', '.'),
+            //     'items' => $sale->items->map(fn($item) => [
+            //         'name' => $item->product->name,
+            //         'quantity' => $item->quantity,
+            //         'price' => number_format($item->price, 0, ',', '.'),
+            //         'subtotal' => number_format($item->subtotal, 0, ',', '.'),
+            //     ]),
+            // ]);
+
+
+            $data = [
                 'invoice' => $sale->invoice_number,
                 'date' => now()->format('d-m-Y H:i'),
+                'cashier' => Auth::user()->name,
+                'payment_method' => ucfirst($sale->payment_method),
+                'discount' => number_format($sale->discount_amount ?? 0, 0, ',', '.'),
                 'total' => number_format($sale->total_amount, 0, ',', '.'),
                 'paid' => number_format($sale->paid_amount, 0, ',', '.'),
                 'change' => number_format($sale->change_amount, 0, ',', '.'),
@@ -269,7 +287,11 @@ class CashierIndex extends Component
                     'price' => number_format($item->price, 0, ',', '.'),
                     'subtotal' => number_format($item->subtotal, 0, ',', '.'),
                 ]),
-            ]);
+            ];
+
+            $printer = new \App\Services\ThermalPrinterService();
+            $printer->printReceipt($data);
+
 
             DB::commit();
 
