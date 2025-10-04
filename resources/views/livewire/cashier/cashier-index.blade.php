@@ -227,7 +227,7 @@
             });
 
             function sendToPrinter(sale) {
-                const config = qz.configs.create("POS-PRINTER");
+                const config = qz.configs.create("XP-80");
 
                 qz.appendImage("/images/logo.png", 'png')
                     .then(() => {

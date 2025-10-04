@@ -297,7 +297,11 @@ class CashierIndex extends Component
                     'price' => number_format($item->price, 0, ',', '.'),
                     'subtotal' => number_format($item->subtotal, 0, ',', '.'),
                 ]),
-            ]);
+            ];
+
+            $printer = new \App\Services\ThermalPrinterService();
+            $printer->printReceipt($data);
+
 
             DB::commit();
 
