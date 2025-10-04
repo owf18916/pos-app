@@ -11,7 +11,7 @@ class Sale extends Model
     use HasFactory;
 
     protected $fillable = [
-        'invoice_number', 'payment_method', 'user_id', 'total_amount', 'paid_amount', 'change_amount'
+        'invoice_number', 'payment_method', 'user_id', 'discount', 'subtotal', 'total_amount', 'paid_amount', 'change_amount'
     ];
 
     public static function generateInvoiceNumber()

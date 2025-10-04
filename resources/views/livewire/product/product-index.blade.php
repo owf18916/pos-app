@@ -109,6 +109,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                                 </svg>
                             </button>
+                            <button
+                                wire:click="$dispatch('open-reduce-stock', { id: {{ $product->id }}, name: '{{ addslashes($product->name) }}' })"
+                                class="text-orange-500 hover:text-orange-600" title="Kurangi Stok">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14" />
+                                </svg>
+                            </button>
                             <button wire:click="edit({{ $product->id }})"
                                 class="text-green-500 hover:text-green-600" title="Edit">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -181,4 +188,51 @@
         </div>
     </div>
 
+    {{-- Reduce Stock --}}
+    <div
+        x-data="{ open: false, productId: null, productName: '', quantity: 1, note: '' }"
+        x-on:open-reduce-stock.window="
+            open = true;
+            productId = $event.detail.id;
+            productName = $event.detail.name;
+            quantity = 1;
+            note = '';
+        "
+        x-show="open"
+        style="display: none;"
+        class="fixed inset-0 flex items-center justify-center z-50"
+    >
+        <!-- Transparent click-blocking background -->
+        <div class="fixed inset-0 bg-transparent z-40"></div>
+
+        <!-- Modal box -->
+        <div class="bg-white rounded border p-6 w-full max-w-md z-50">
+            <h2 class="text-lg font-semibold mb-4">
+                Kurangi Stok untuk <span x-text="productName"></span>
+            </h2>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Jumlah Dikurangi</label>
+                <input type="number" min="1" x-model="quantity"
+                    class="mt-1 block w-full rounded border border-gray-300 px-3 py-2" />
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">Catatan (opsional)</label>
+                <textarea x-model="note" rows="3"
+                    class="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
+                    placeholder="Contoh: stok rusak, stok hilang, koreksi fisik, dsb."></textarea>
+            </div>
+
+            <div class="flex justify-end gap-2">
+                <button @click="open = false"
+                    class="bg-gray-300 hover:bg-gray-400 px-4 py-2 rounded">Batal</button>
+                <button
+                    @click="$wire.reduceStock(productId, quantity, note); open = false;"
+                    class="bg-orange-600 hover:bg-orange-700 text-white px-4 py-2 rounded">
+                    Kurangi
+                </button>
+            </div>
+        </div>
+    </div>
 </div>

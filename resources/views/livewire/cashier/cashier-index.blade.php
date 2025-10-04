@@ -93,9 +93,26 @@
 
         {{-- Pembayaran --}}
         <div class="bg-white rounded-xl shadow-sm p-4 space-y-3">
+            {{-- Total Sebelum Diskon --}}
             <div class="flex justify-between">
-                <span class="text-sm text-gray-600">Total</span>
-                <span class="font-bold">Rp {{ number_format($this->getTotal(), 0, ',', '.') }}</span>
+                <span class="text-sm text-gray-600">Total Sebelum Diskon</span>
+                <span class="text-sm text-gray-800 font-semibold">
+                    {{ $this->formattedSubtotalBeforeDiscount }}
+                </span>
+            </div>
+
+            {{-- Jika Ada Diskon --}}
+            @if ($discount > 0)
+                <div class="flex justify-between">
+                    <span class="text-sm text-gray-600">Diskon</span>
+                    <span class="text-sm text-red-500">- Rp {{ number_format($discount, 0, ',', '.') }}</span>
+                </div>
+            @endif
+
+            {{-- Total Setelah Diskon --}}
+            <div class="flex justify-between border-t pt-2">
+                <span class="text-sm text-gray-700 font-medium">Total Dibayar</span>
+                <span class="text-lg font-bold text-blue-700">Rp {{ number_format($this->getTotal(), 0, ',', '.') }}</span>
             </div>
 
             {{-- Metode Pembayaran --}}
@@ -108,6 +125,29 @@
                     <option value="transfer">Transfer</option>
                     <option value="qris">QRIS</option>
                 </select>
+            </div>
+
+            <div class="mt-4">
+                <label for="discount" class="block text-sm font-medium text-gray-700 mb-1">Diskon (Rp)</label>
+                <input
+                    wire:model.lazy="discount"
+                    x-data="{
+                        displayDiscount: '{{ number_format((float) $discount, 0, ',', '.') }}',
+                        format(value) {
+                            let cleaned = value.replace(/\D/g, '');
+                            return new Intl.NumberFormat('id-ID').format(cleaned);
+                        }
+                    }"
+                    x-init="$watch('displayDiscount', value => {
+                        let numeric = value.replace(/\D/g, '');
+                        $wire.set('discount', parseInt(numeric || 0));
+                    })"
+                    x-model="displayDiscount"
+                    @input="displayDiscount = format($event.target.value)"
+                    type="text"
+                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+                    placeholder="Masukkan diskon (Rp)"
+                />
             </div>
 
             <div class="mt-4">
@@ -202,6 +242,8 @@
                             `Tanggal: ${sale.date}\n\n`,
                             items,
                             '-----------------------------\n',
+                            `Subtotal: ${sale.subtotal || sale.total}\n`,
+                            sale.discount && sale.discount !== '0' ? `Diskon  : -${sale.discount}\n` : '',
                             `Total   : ${sale.total}\n`,
                             `Bayar   : ${sale.paid}\n`,
                             `Kembali : ${sale.change}\n`,
@@ -263,7 +305,12 @@
                         <table>${itemRows}</table>
                         <hr>
                         <table>
-                            <tr><td colspan="3" class="right">Total</td><td class="right">${data.total}</td></tr>
+                            <tr>
+                                <td colspan="3" class="right">Subtotal</td><td class="right">${data.subtotal || data.total}</td>
+                            </tr>
+                            ${data.discount && data.discount != '0' 
+                            ? `<tr><td colspan="3" class="right">Diskon</td><td class="right">- ${data.discount}</td></tr>`
+                            : ''}
                             <tr><td colspan="3" class="right">Bayar</td><td class="right">${data.paid}</td></tr>
                             <tr><td colspan="3" class="right">Kembali</td><td class="right">${data.change}</td></tr>
                         </table>

@@ -149,7 +149,7 @@
             </thead>
             <tbody>
                 @forelse ($transactions as $trx)
-                    <tr class="{{ $trx->type === 'in' ? 'bg-green-50' : 'bg-red-50' }}">
+                    <tr class="{{ $trx->type == 'in' ? 'bg-green-50' : 'bg-red-50' }}">
                         <td class="p-2 border">{{ \Carbon\Carbon::parse($trx->date)->translatedFormat('d F Y') }}</td>
                         <td class="p-2 border capitalize">{{ $trx->type == 'in' ? 'Pemasukan' : 'Pengeluaran' }}</td>
                         <td class="p-2 border capitalize">{{ $trx->source }}</td>
@@ -198,5 +198,8 @@
                 @endforelse
             </tbody>
         </table>
+        <div class="p-4">
+            {{ $transactions->links() }}
+        </div>
     </div>
 </div>

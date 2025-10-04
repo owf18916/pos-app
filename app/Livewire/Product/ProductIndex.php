@@ -10,6 +10,7 @@ use App\Models\StockMovement;
 use App\Exports\ProductExport;
 use Livewire\Attributes\Title;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ProductIndex extends Component
@@ -153,6 +154,55 @@ class ProductIndex extends Component
             'text' => 'Stok berhasil ditambahkan.',
             'icon' => 'success',
         ]);
+    }
+
+    public function reduceStock($id, $quantity, $note = null)
+    {
+        $quantity = (int) $quantity;
+
+        if ($quantity <= 0) {
+            $this->dispatch('swal', [
+                'title' => 'Error',
+                'text' => 'Jumlah pengurangan harus lebih dari 0.',
+                'icon' => 'error',
+            ]);
+            return;
+        }
+
+        DB::transaction(function () use ($id, $quantity, $note) {
+            // Kunci baris product saat transaksi untuk mencegah race condition
+            $product = Product::where('id', $id)->lockForUpdate()->firstOrFail();
+
+            if ($product->stock < $quantity) {
+                $this->dispatch('swal', [
+                    'title' => 'Gagal',
+                    'text' => 'Stok tidak mencukupi untuk dikurangi.',
+                    'icon' => 'error',
+                ]);
+                // lempar exception kecil agar rollback & keluar dari transaction
+                throw new \RuntimeException('Insufficient stock');
+            }
+
+            // Kurangi stok
+            $product->decrement('stock', $quantity);
+
+            // Catat movement: quantity negatif untuk konsistensi penyesuaian stok
+            StockMovement::create([
+                'product_id' => $product->id,
+                'quantity'   => $quantity,
+                'type'       => 'pengurangan',
+                'note'       => $note ?: 'Pengurangan stok manual',
+            ]);
+        });
+
+        $this->dispatch('swal', [
+            'title' => 'Berhasil!',
+            'text'  => 'Stok berhasil dikurangi.',
+            'icon'  => 'success',
+        ]);
+
+        // Refresh tabel
+        $this->loadProducts();
     }
 
     #[On('load-products')]
